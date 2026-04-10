@@ -9,6 +9,11 @@ if [ ! -f "$WP_DIR/wp-settings.php" ]; then
     exit 0
 fi
 
+# Force fresh install on each deploy (free tier has no persistent storage anyway)
+echo "Cleaning old database for fresh install..."
+rm -f "$WP_DIR/wp-content/database/wordpress.db"
+rm -f "$WP_DIR/wp-config.php"
+
 # Create wp-config.php for SQLite if it doesn't exist
 if [ ! -f "$WP_DIR/wp-config.php" ]; then
     echo "Creating wp-config.php for SQLite..."
