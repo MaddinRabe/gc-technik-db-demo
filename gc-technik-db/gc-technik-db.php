@@ -90,6 +90,13 @@ final class GC_Technik_DB {
             }
         }
 
+        if ( is_tax( 'gc_category' ) || is_tax( 'gc_model' ) || is_tax( 'gc_model_year' ) || is_tax( 'gc_component' ) ) {
+            $custom = GC_TECHNIK_DB_PATH . 'templates/taxonomy-gc.php';
+            if ( file_exists( $custom ) ) {
+                return $custom;
+            }
+        }
+
         return $template;
     }
 
