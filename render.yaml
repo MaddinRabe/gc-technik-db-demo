@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: gc-technik-db-demo
+    runtime: docker
+    plan: free
+    dockerfilePath: ./Dockerfile
+    envVars:
+      - key: PORT
+        value: "10000"
+    disk:
+      name: wp-data
+      mountPath: /var/www/html/wp-content/database
+      sizeGB: 1
