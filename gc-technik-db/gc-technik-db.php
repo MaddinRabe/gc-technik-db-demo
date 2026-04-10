@@ -25,6 +25,9 @@ require_once GC_TECHNIK_DB_PATH . 'includes/class-gc-taxonomies.php';
 require_once GC_TECHNIK_DB_PATH . 'includes/class-gc-search.php';
 require_once GC_TECHNIK_DB_PATH . 'includes/class-gc-toc.php';
 require_once GC_TECHNIK_DB_PATH . 'sample-data/import.php';
+require_once GC_TECHNIK_DB_PATH . 'sample-data/import-batch1-tpis.php';
+require_once GC_TECHNIK_DB_PATH . 'sample-data/import-batch1-part2.php';
+require_once GC_TECHNIK_DB_PATH . 'sample-data/import-batch1-part3.php';
 
 final class GC_Technik_DB {
 

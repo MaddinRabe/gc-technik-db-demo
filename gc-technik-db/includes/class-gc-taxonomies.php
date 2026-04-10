@@ -98,30 +98,48 @@ class GC_Taxonomies {
                 'Steuergeräte',
                 'Steckverbindungen',
             ],
-            'Camping' => [
+            'Campingausstattung Grand California' => [
                 'Küche',
                 'Nasszelle',
                 'Heizung & Klima',
                 'Wasser & Sanitär',
                 'Strom & Solar',
+                'Möbel & Verkleidungen',
+                'Dach & Dachhauben',
+                'Markise',
             ],
             'Karosserie' => [
                 'Innenausstattung',
                 'Außen',
                 'Fenster & Türen',
                 'Dach & Aufstelldach',
+                'Folierung',
             ],
             'Fahrwerk & Motor' => [
                 'Motor',
                 'Getriebe',
                 'Bremsen',
                 'Lenkung',
+                'Abgas & Umwelt',
             ],
             'Reparaturanleitungen' => [
                 'Aus- und Einbau',
                 'Wartung',
                 'Fehlerbehebung',
+                'Montageübersichten',
             ],
+            'Technische Produktinformationen (TPI)' => [
+                'Elektrik & Elektronik',
+                'Aufbau & Ausstattung',
+                'Motor & Antrieb',
+                'Fahrwerk & Lenkung',
+                'Heizung & Klima',
+            ],
+            'Servicehinweise' => [
+                'Bekannte Probleme',
+                'Lösungen & Workarounds',
+            ],
+            'Servicemaßnahmen & Rückrufe' => [],
         ];
 
         foreach ( $categories as $parent_name => $children ) {
