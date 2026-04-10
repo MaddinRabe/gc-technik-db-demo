@@ -31,6 +31,7 @@ require_once GC_TECHNIK_DB_PATH . 'sample-data/import-batch1-part3.php';
 require_once GC_TECHNIK_DB_PATH . 'sample-data/import-batch2-part1.php';
 require_once GC_TECHNIK_DB_PATH . 'sample-data/import-batch2-part2.php';
 require_once GC_TECHNIK_DB_PATH . 'sample-data/import-batch2-part3.php';
+require_once GC_TECHNIK_DB_PATH . 'sample-data/import-batch3.php';
 
 final class GC_Technik_DB {
 
