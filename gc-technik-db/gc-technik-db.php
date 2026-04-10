@@ -45,6 +45,7 @@ final class GC_Technik_DB {
 
         add_action( 'wp_enqueue_scripts', [ $this, 'enqueue_assets' ] );
         add_filter( 'template_include', [ $this, 'load_templates' ] );
+        add_action( 'template_redirect', [ $this, 'redirect_homepage' ] );
 
         register_activation_hook( __FILE__, [ $this, 'activate' ] );
     }
@@ -98,6 +99,16 @@ final class GC_Technik_DB {
         }
 
         return $template;
+    }
+
+    public function redirect_homepage() {
+        if ( is_front_page() || is_home() ) {
+            $archive_url = get_post_type_archive_link( 'gc_article' );
+            if ( $archive_url ) {
+                wp_safe_redirect( $archive_url, 302 );
+                exit;
+            }
+        }
     }
 
     public function activate() {

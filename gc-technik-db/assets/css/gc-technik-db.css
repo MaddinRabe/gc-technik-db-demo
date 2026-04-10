@@ -435,6 +435,37 @@
    Single Article
    ========================================================================== */
 
+/* Compact search bar for single articles */
+.gc-single-searchbar {
+    margin-bottom: 1.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--gc-border);
+}
+
+.gc-single-searchbar .gc-search-wrapper {
+    margin-bottom: 0;
+}
+
+.gc-single-searchbar .gc-search-bar {
+    max-width: 100%;
+}
+
+.gc-back-to-db {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    color: var(--gc-primary);
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 500;
+    margin-bottom: 1rem;
+    transition: color 0.2s;
+}
+
+.gc-back-to-db:hover {
+    color: var(--gc-accent-hover);
+}
+
 .gc-single-wrapper {
     max-width: var(--gc-max-width);
     margin: 0 auto;

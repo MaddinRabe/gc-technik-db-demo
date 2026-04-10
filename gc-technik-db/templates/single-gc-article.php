@@ -6,6 +6,16 @@
 get_header(); ?>
 
 <div class="gc-single-wrapper">
+
+    <!-- Compact search bar -->
+    <div class="gc-single-searchbar">
+        <a href="<?php echo esc_url( get_post_type_archive_link( 'gc_article' ) ); ?>" class="gc-back-to-db">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"/></svg>
+            Technik-Datenbank
+        </a>
+        <?php echo do_shortcode( '[gc_technik_suche]' ); ?>
+    </div>
+
     <?php while ( have_posts() ) : the_post(); ?>
 
         <article class="gc-single-article">

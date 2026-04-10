@@ -6,6 +6,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 class GC_Search {
 
+    private $search_term = '';
+
     public function __construct() {
         add_shortcode( 'gc_technik_suche', [ $this, 'render_shortcode' ] );
         add_action( 'wp_ajax_gc_search', [ $this, 'ajax_search' ] );
@@ -97,23 +99,16 @@ class GC_Search {
     public function ajax_search() {
         check_ajax_referer( 'gc_search_nonce', 'nonce' );
 
-        $query   = sanitize_text_field( $_POST['query'] ?? '' );
-        $page    = absint( $_POST['page'] ?? 1 );
+        $query    = sanitize_text_field( $_POST['query'] ?? '' );
+        $page     = absint( $_POST['page'] ?? 1 );
         $per_page = absint( $_POST['per_page'] ?? 12 );
-        $filters = [];
+        $filters  = [];
 
         foreach ( [ 'gc_category', 'gc_model', 'gc_model_year' ] as $tax ) {
             $val = absint( $_POST[ $tax ] ?? 0 );
             if ( $val ) {
                 $filters[ $tax ] = $val;
             }
-        }
-
-        $cache_key = 'gc_search_' . md5( $query . serialize( $filters ) . $page . $per_page );
-        $cached = get_transient( $cache_key );
-
-        if ( false !== $cached ) {
-            wp_send_json_success( $cached );
         }
 
         $args = [
@@ -123,17 +118,12 @@ class GC_Search {
             'post_status'    => 'publish',
         ];
 
+        // Use custom WHERE clause to search title, content, excerpt AND meta fields with OR
         if ( $query ) {
-            $args['s'] = $query;
-
-            // Also search custom fields
-            $args['meta_query'] = [
-                'relation' => 'OR',
-                [ 'key' => 'gc_vw_code', 'value' => $query, 'compare' => 'LIKE' ],
-                [ 'key' => 'gc_wire_colors', 'value' => $query, 'compare' => 'LIKE' ],
-                [ 'key' => 'gc_fuse_rating', 'value' => $query, 'compare' => 'LIKE' ],
-                [ 'key' => 'gc_location', 'value' => $query, 'compare' => 'LIKE' ],
-            ];
+            $this->search_term = $query;
+            add_filter( 'posts_where', [ $this, 'custom_search_where' ] );
+            add_filter( 'posts_join', [ $this, 'custom_search_join' ] );
+            add_filter( 'posts_groupby', [ $this, 'custom_search_groupby' ] );
         }
 
         if ( ! empty( $filters ) ) {
@@ -148,7 +138,15 @@ class GC_Search {
         }
 
         $wp_query = new WP_Query( $args );
-        $results  = [];
+
+        // Remove filters
+        if ( $query ) {
+            remove_filter( 'posts_where', [ $this, 'custom_search_where' ] );
+            remove_filter( 'posts_join', [ $this, 'custom_search_join' ] );
+            remove_filter( 'posts_groupby', [ $this, 'custom_search_groupby' ] );
+        }
+
+        $results = [];
 
         foreach ( $wp_query->posts as $post ) {
             $categories = wp_get_post_terms( $post->ID, 'gc_category', [ 'fields' => 'names' ] );
@@ -175,15 +173,40 @@ class GC_Search {
         }
 
         $response = [
-            'results'    => $results,
-            'total'      => $wp_query->found_posts,
-            'pages'      => $wp_query->max_num_pages,
-            'page'       => $page,
+            'results' => $results,
+            'total'   => $wp_query->found_posts,
+            'pages'   => $wp_query->max_num_pages,
+            'page'    => $page,
         ];
 
-        set_transient( $cache_key, $response, 5 * MINUTE_IN_SECONDS );
-
         wp_send_json_success( $response );
+    }
+
+    public function custom_search_join( $join ) {
+        global $wpdb;
+        $join .= " LEFT JOIN {$wpdb->postmeta} AS gc_meta ON ({$wpdb->posts}.ID = gc_meta.post_id)";
+        return $join;
+    }
+
+    public function custom_search_where( $where ) {
+        global $wpdb;
+        $term = '%' . $wpdb->esc_like( $this->search_term ) . '%';
+        $where .= $wpdb->prepare(
+            " AND (
+                {$wpdb->posts}.post_title LIKE %s
+                OR {$wpdb->posts}.post_content LIKE %s
+                OR {$wpdb->posts}.post_excerpt LIKE %s
+                OR (gc_meta.meta_key IN ('gc_vw_code','gc_wire_colors','gc_fuse_rating','gc_location','gc_tools_needed') AND gc_meta.meta_value LIKE %s)
+            )",
+            $term, $term, $term, $term
+        );
+        return $where;
+    }
+
+    public function custom_search_groupby( $groupby ) {
+        global $wpdb;
+        $groupby = "{$wpdb->posts}.ID";
+        return $groupby;
     }
 
     private function highlight_text( $text, $query ) {
