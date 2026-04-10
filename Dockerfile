@@ -1,12 +1,6 @@
 FROM wordpress:6.7-php8.2-apache
 
-# Persistent storage for WordPress data
-ENV WORDPRESS_DB_HOST=localhost
-ENV WORDPRESS_DB_NAME=wordpress
-ENV WORDPRESS_DB_USER=root
-ENV WORDPRESS_DB_PASSWORD=root
-
-# Install SQLite extension (already included in this image)
+# Install SQLite extension and tools
 RUN apt-get update && apt-get install -y \
     libsqlite3-dev \
     unzip \
